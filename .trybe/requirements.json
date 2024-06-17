@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    {
+      "bonus": false,
+      "description": "1. Desenvolva o endpoint GET",
+      "enabled": true,
+      "identifier": null,
+      "order": 1,
+      "skill_ids": []
+    },
+    {
+      "bonus": false,
+      "description": "2. Desenvolva o Dockerfile",
+      "enabled": true,
+      "identifier": null,
+      "order": 2,
+      "skill_ids": []
+    }
+  ]
+}
