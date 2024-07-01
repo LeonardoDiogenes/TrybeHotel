@@ -11,9 +11,10 @@ namespace TrybeHotel.Repository
             _context = context;
         }
 
-        public BookingResponse Add(BookingDtoInsert booking)
+        public BookingResponse Add(BookingDtoInsert booking, string userEmail)
         {
             var room = _context.Rooms.First(r => r.RoomId == booking.RoomId);
+            var userId = _context.Users.First(u => u.Email == userEmail).UserId;
             if (booking.GuestQuant > room.Capacity)
             {
                 throw new InvalidOperationException("Guest quantity over room capacity");
@@ -24,7 +25,8 @@ namespace TrybeHotel.Repository
                 CheckIn = booking.Checkin,
                 CheckOut = booking.Checkout,
                 GuestQuant = booking.GuestQuant,
-                RoomId = booking.RoomId
+                RoomId = booking.RoomId,
+                UserId = userId
             };
             _context.Bookings.Add(newBooking);
             _context.SaveChanges();

@@ -26,7 +26,9 @@ namespace TrybeHotel.Controllers
         public IActionResult Add([FromBody] BookingDtoInsert bookingInsert){
             try
             {
-                var booking = _repository.Add(bookingInsert);
+                var token = HttpContext.User.Identity as ClaimsIdentity;
+                var userEmail = token?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                var booking = _repository.Add(bookingInsert, userEmail!);
                 return Created("", booking);
             }
             catch (InvalidOperationException e)
