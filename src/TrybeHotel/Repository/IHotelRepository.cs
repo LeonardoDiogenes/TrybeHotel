@@ -7,5 +7,7 @@ namespace TrybeHotel.Repository
     {
         IEnumerable<HotelDto> GetHotels();
         HotelDto AddHotel(Hotel hotel);
+        void DeleteHotel(int id);
+        HotelDto UpdateHotel(Hotel hotel);
     }
 }

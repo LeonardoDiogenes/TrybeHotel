@@ -50,5 +50,38 @@ namespace TrybeHotel.Repository
                 throw new Exception(err.Message);
             }
         }
+
+        public void DeleteHotel(int id)
+        {
+            var hotel = _context.Hotels.First(h => h.HotelId == id);
+            if (hotel == null)
+                throw new Exception("Hotel not found");
+
+            _context.Hotels.Remove(hotel);
+            _context.SaveChanges();
+        }
+
+        public HotelDto UpdateHotel(Hotel hotel)
+        {
+            var hotelToUpdate = _context.Hotels.First(h => h.HotelId == hotel.HotelId);
+            hotelToUpdate.City = _context.Cities.First(c => c.CityId == hotel.CityId);
+            if (hotelToUpdate == null)
+                throw new Exception("Hotel not found");
+
+            hotelToUpdate.Name = hotel.Name;
+            hotelToUpdate.Address = hotel.Address;
+            hotelToUpdate.CityId = hotel.CityId;
+            _context.SaveChanges();
+
+            return new HotelDto
+            {
+                HotelId = hotelToUpdate.HotelId,
+                Name = hotelToUpdate.Name,
+                Address = hotelToUpdate.Address,
+                CityId = hotelToUpdate.CityId,
+                CityName = hotelToUpdate.City!.Name,
+                State = hotelToUpdate.City!.State
+            };
+        }
     }
 }

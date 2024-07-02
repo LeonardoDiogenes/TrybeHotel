@@ -32,6 +32,33 @@ namespace TrybeHotel.Controllers
             return Created("" ,_repository.AddHotel(hotel));
         }
 
+        [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "Admin")]
+        public IActionResult DeleteHotel(int id){
+            try
+            {
+                _repository.DeleteHotel(id);
+                return NoContent();
+            }
+            catch (System.Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
-    }
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "Admin")]
+        public IActionResult PutHotel([FromBody] Hotel hotel){
+            try
+            {
+                return Ok(_repository.UpdateHotel(hotel));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+}
 }

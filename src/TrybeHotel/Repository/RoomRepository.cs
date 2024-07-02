@@ -73,5 +73,40 @@ namespace TrybeHotel.Repository
                 _context.SaveChanges();
             }
         }
+
+        public RoomDto UpdateRoom(int RoomId, Room room) {
+            var roomToUpdate = _context.Rooms.Find(RoomId);
+            Console.WriteLine(roomToUpdate);
+            if (roomToUpdate == null)
+            {
+                throw new Exception("Room not found");
+            }
+
+            roomToUpdate.Name = room.Name;
+            roomToUpdate.Capacity = room.Capacity;
+            roomToUpdate.Image = room.Image;
+            _context.SaveChanges();
+
+            roomToUpdate.Hotel = _context.Hotels.FirstOrDefault(h => h.HotelId == room.HotelId);
+            roomToUpdate.Hotel!.City = _context.Cities.FirstOrDefault(c => c.CityId == roomToUpdate.Hotel.CityId);
+            Console.WriteLine(roomToUpdate.Hotel + " " + roomToUpdate.Hotel.City);
+
+            return new RoomDto
+            {
+                RoomId = roomToUpdate.RoomId,
+                Name = roomToUpdate.Name,
+                Capacity = roomToUpdate.Capacity,
+                Image = roomToUpdate.Image,
+                Hotel = new HotelDto
+                {
+                    HotelId = roomToUpdate.Hotel.HotelId,
+                    Name = roomToUpdate.Hotel.Name,
+                    Address = roomToUpdate.Hotel.Address,
+                    CityId = roomToUpdate.Hotel.CityId,
+                    CityName = roomToUpdate.Hotel.City!.Name,
+                    State = roomToUpdate.Hotel.City.State
+                }
+            };
+        }
     }
 }

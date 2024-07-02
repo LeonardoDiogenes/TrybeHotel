@@ -9,5 +9,7 @@ namespace TrybeHotel.Repository
         RoomDto AddRoom(Room room);
 
         void DeleteRoom(int RoomId);
+
+        RoomDto UpdateRoom(int RoomId, Room room);
     }
 }

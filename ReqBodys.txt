@@ -1,0 +1,44 @@
+POST /city
+{
+  "name": "string",
+  "state": "string"
+}
+PUT /city
+{
+  "cityid": int,
+  "name": "string",
+  "state": "string"
+}
+
+POST /user
+{
+  "name": "string",
+  "email": "string",
+  "password": "string
+}
+
+
+
+{
+  "GuestEmail": "guest@example.com",
+  "Checkin": "2024-07-01T14:00:00",
+  "Checkout": "2024-07-10T11:00:00",
+  "GuestQuant": 2,
+  "RoomId": 1
+}
+
+
+{
+  "email": "example@example",
+  "password": "123"
+  
+}
+
+PUT Room
+
+{
+  "name": "Quarto 1001",
+  "capacity": 2,
+  "image": "https://via.placeholder.com/150",
+  "hotelid": 1
+}

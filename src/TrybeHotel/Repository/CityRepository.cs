@@ -39,15 +39,29 @@ namespace TrybeHotel.Repository
         public CityDto UpdateCity(City city)
         {
             var cityToUpdate = _context.Cities.Find(city.CityId);
+            if (cityToUpdate == null)
+                throw new Exception("City not found");
+
             cityToUpdate!.Name = city.Name;
             cityToUpdate.State = city.State;
             _context.SaveChanges();
+            
             return new CityDto
             {
                 CityId = cityToUpdate.CityId,
                 Name = cityToUpdate.Name,
                 State = cityToUpdate.State
             };
+        }
+
+        public void DeleteCity(int id)
+        {
+            var city = _context.Cities.Find(id);
+            if (city == null)
+                throw new Exception("City not found");
+                
+            _context.Cities.Remove(city);
+            _context.SaveChanges();
         }
 
     }

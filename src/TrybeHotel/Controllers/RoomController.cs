@@ -36,5 +36,20 @@ namespace TrybeHotel.Controllers
             _repository.DeleteRoom(RoomId);
             return NoContent();
         }
+
+        [HttpPut("{RoomId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "Admin")]
+        public IActionResult UpdateRoom(int RoomId, [FromBody] Room room)
+        {
+            try
+            {
+                return Ok(_repository.UpdateRoom(RoomId, room));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
