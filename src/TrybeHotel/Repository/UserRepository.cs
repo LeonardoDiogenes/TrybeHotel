@@ -55,7 +55,7 @@ namespace TrybeHotel.Repository
                     UserId = newUser.UserId,
                     Name = newUser.Name,
                     Email = newUser.Email,
-                    UserType = "client"
+                    UserType = newUser.UserType
                 };
                 }
             catch (Exception ex)
@@ -71,7 +71,52 @@ namespace TrybeHotel.Repository
 
         public IEnumerable<UserDto> GetUsers()
         {
-           throw new NotImplementedException();
+            try
+            {
+                return _context.Users.Select(u => new UserDto
+            {
+                UserId = u.UserId,
+                Name = u.Name,
+                Email = u.Email,
+                UserType = u.UserType
+            });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void Delete(int userId)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+        }
+
+        public UserDto Update(User user)
+        {
+            var userToUpdate = _context.Users.FirstOrDefault(u => u.UserId == user.UserId);
+            if (userToUpdate == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            userToUpdate.Name = user.Name;
+            userToUpdate.Email = user.Email;
+            userToUpdate.UserType = user.UserType;
+            userToUpdate.Password = user.Password;
+            _context.SaveChanges();
+            return new UserDto
+            {
+                UserId = userToUpdate.UserId,
+                Name = userToUpdate.Name,
+                Email = userToUpdate.Email,
+                UserType = userToUpdate.UserType
+            };
         }
 
     }

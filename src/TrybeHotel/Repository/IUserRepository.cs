@@ -10,6 +10,10 @@ namespace TrybeHotel.Repository
         UserDto Login(LoginDto login);
         UserDto GetUserByEmail(string userEmail);
         IEnumerable<UserDto> GetUsers();
+
+        void Delete(int userId);
+
+        UserDto Update(User user);
     }
 
 }

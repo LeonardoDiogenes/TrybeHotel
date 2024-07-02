@@ -19,8 +19,18 @@ namespace TrybeHotel.Controllers
         }
         
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "Admin")]
         public IActionResult GetUsers(){
-            throw new NotImplementedException();
+            try
+            {
+                var users = _repository.GetUsers();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
         [HttpPost]
@@ -36,5 +46,40 @@ namespace TrybeHotel.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+
+        [HttpDelete("{userId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "Admin")]
+
+        public IActionResult Delete(int userId)
+        {
+            try
+            {
+                _repository.Delete(userId);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "Admin")]
+
+        public IActionResult Update([FromBody] User user)
+        {
+            try
+            {
+                var updatedUser = _repository.Update(user);
+                return Ok(updatedUser);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+        }
+
     }
 }

@@ -38,8 +38,8 @@ public class TrybeHotelContext : DbContext, ITrybeHotelContext
         );
 
         modelBuilder.Entity<User>().HasData(
-            new User {UserId = 1, Name = "User 1", Email = "example@example", Password = "123", UserType = "Admin"},
-            new User {UserId = 2, Name = "User 2", Email = "example2@example", Password = "123", UserType = "User"}
+            new User {UserId = 1, Name = "User 1", Email = "example@example", Password = "123", UserType = "admin"},
+            new User {UserId = 2, Name = "User 2", Email = "example2@example", Password = "123", UserType = "client"}
         );
 
         modelBuilder.Entity<Booking>().HasData(
