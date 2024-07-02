@@ -16,9 +16,9 @@ Este projeto simula uma API para a gestão de uma rede de hotéis, utilizando AS
 ### Rotas de Cidade (City)
 - **GET /city**  
   Lista todas as cidades.
-- **POST /city**  
+- **POST /city (admin)**  
   Cadastro de cidades.
-- **PUT /city**  
+- **PUT /city (admin)**  
   Atualiza os dados de uma cidade existente.
 
 ### Rotas de Hotel (Hotel)
@@ -40,6 +40,10 @@ Este projeto simula uma API para a gestão de uma rede de hotéis, utilizando AS
   Cadastro de nova pessoa usuária.
 - **GET /user (admin)**  
   Lista todas as pessoas usuárias.
+- **DELETE /user (admin)**  
+  Remove uma pessoa usuária.
+- **PUT /user (admin)**  
+  Atualiza todos os campos de uma pessoa usuária.
 
 ### Rotas de Autenticação (Auth)
 - **POST /login**  
