@@ -60,5 +60,37 @@ namespace TrybeHotel.Controllers
                 throw new Exception(e.Message);
             }
         }
+
+        [HttpPut("{Bookingid}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "Client")]
+        public IActionResult UpdateBooking(int bookingId, [FromBody] BookingDtoInsert bookingInsert){
+            try
+            {
+                var token = HttpContext.User.Identity as ClaimsIdentity;
+                var userEmail = token?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                var booking = _repository.UpdateBooking(bookingId, bookingInsert, userEmail!);
+                return Ok(booking);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(new { message = e.Message });
+            }
+        }
+
+        [HttpDelete("{Bookingid}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "Admin")]
+        public IActionResult DeleteBooking(int bookingId){
+            try
+            {
+                _repository.DeleteBooking(bookingId);
+                return NoContent();
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(new { message = e.Message });
+            }
+        }
     }
 }

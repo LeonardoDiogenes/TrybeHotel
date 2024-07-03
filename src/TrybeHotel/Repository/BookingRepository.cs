@@ -100,6 +100,64 @@ namespace TrybeHotel.Repository
             throw new NotImplementedException();
         }
 
+        public BookingResponse UpdateBooking(int bookingId, BookingDtoInsert booking, string userEmail)
+        {
+            var room = _context.Rooms.First(r => r.RoomId == booking.RoomId);
+            var userId = _context.Users.First(u => u.Email == userEmail).UserId;
+            if (booking.GuestQuant > room.Capacity)
+            {
+                throw new InvalidOperationException("Guest quantity over room capacity");
+            }
+
+            var bookingToUpdate = _context.Bookings.First(b => b.BookingId == bookingId);
+            if (bookingToUpdate.UserId != userId)
+            {
+                throw new InvalidOperationException("User not allowed to update this booking");
+            }
+
+            bookingToUpdate.CheckIn = booking.Checkin;
+            bookingToUpdate.CheckOut = booking.Checkout;
+            bookingToUpdate.GuestQuant = booking.GuestQuant;
+            bookingToUpdate.RoomId = booking.RoomId;
+            _context.SaveChanges();
+
+            var hotel = _context.Hotels.First(h => h.HotelId == room.HotelId);
+            var city = _context.Cities.First(c => c.CityId == hotel.CityId);
+            return new BookingResponse
+            {
+                BookingId = bookingToUpdate.BookingId,
+                Checkin = bookingToUpdate.CheckIn,
+                Checkout = bookingToUpdate.CheckOut,
+                GuestQuant = bookingToUpdate.GuestQuant,
+                Room = new RoomDto
+                {
+                    RoomId = room.RoomId,
+                    Name = room.Name,
+                    Capacity = room.Capacity,
+                    Image = room.Image,
+                    Hotel = new HotelDto
+                    {
+                        HotelId = hotel.HotelId,
+                        Name = hotel.Name,
+                        Address = hotel.Address,
+                        CityId = city.CityId,
+                        CityName = city.Name,
+                        State = city.State
+                    }
+                }
+            };
+
     }
 
+        public void DeleteBooking(int bookingId)
+        {
+            var booking = _context.Bookings.First(b => b.BookingId == bookingId);
+            if (booking == null)
+            {
+                throw new InvalidOperationException("Booking not found");
+            }
+            _context.Bookings.Remove(booking);
+            _context.SaveChanges();
+        }
+    }
 }
