@@ -10,6 +10,8 @@ using System.Text.Json;
 using System.Diagnostics;
 using System.Xml;
 using System.IO;
+using TrybeHotel.Dto;
+using System.Text;
 
 public class LoginJson {
     public string? token { get; set; }
@@ -82,7 +84,70 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
     public async Task TestGet(string url)
     {
         var response = await _clientTest.GetAsync(url);
+        var responseData = await response.Content.ReadAsStringAsync();
+        var cities = JsonConvert.DeserializeObject<List<City>>(responseData);
+
         Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+        Assert.NotNull(cities);
+        Assert.Contains(cities, c => c.Name == "Manaus" && c.State == "AM");
+        Assert.Contains(cities, c => c.Name == "Palmas" && c.State == "TO");
+
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Executando meus testes")]
+    [InlineData("/hotel")]
+    public async Task TestGetHotel(string url)
+    {
+        var response = await _clientTest.GetAsync(url);
+        var responseData = await response.Content.ReadAsStringAsync();
+        var hotels = JsonConvert.DeserializeObject<List<Hotel>>(responseData);
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+        Assert.NotNull(hotels);
+        Assert.Contains(hotels, c => c.Name == "Trybe Hotel Manaus" && c.Address == "Address 1");
+        Assert.Contains(hotels, c => c.Name == "Trybe Hotel Palmas" && c.Address == "Address 2");
+        Assert.Contains(hotels, c => c.Name == "Trybe Hotel Ponta Negra" && c.Address == "Addres 3");
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Executando meus testes")]
+    [InlineData("/room/1")] //HotelId
+    public async Task TestGetRoom(string url)
+    {
+        var response = await _clientTest.GetAsync(url);
+        var responseData = await response.Content.ReadAsStringAsync();
+        var rooms = JsonConvert.DeserializeObject<List<Room>>(responseData);
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+        Assert.NotNull(rooms);
+        Assert.Contains(rooms, c => c.Name == "Room 1" && c.Capacity == 2);
+        Assert.Contains(rooms, c => c.Name == "Room 2" && c.Capacity == 3);
+        Assert.Contains(rooms, c => c.Name == "Room 3" && c.Capacity == 4);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Executando meus testes")]
+    [InlineData("/user")]
+    public async Task TestPostUser(string url)
+    {
+        var user = new UserDtoInsert {
+            Name = "Carlos",
+            Email = "carlos@exemplo.com",
+            Password = "Senha123"
+        };
+        var json = JsonConvert.SerializeObject(user);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _clientTest.PostAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var newUser = JsonConvert.DeserializeObject<UserDto>(responseContent);
+
+        Assert.Equal(System.Net.HttpStatusCode.Created, response?.StatusCode);
+        Assert.NotNull(newUser);
+        Assert.Equal(user.Name, newUser!.Name);
+        Assert.Equal(user.Email, newUser!.Email);
+        Assert.Equal("client", newUser!.UserType);
+        
     }
 
     
