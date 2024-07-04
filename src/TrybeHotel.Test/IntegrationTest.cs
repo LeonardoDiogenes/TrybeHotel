@@ -235,6 +235,19 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(city.Name, newCity!.Name);
         Assert.Equal(city.State, newCity!.State);
     }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Executando meus testes")]
+    [InlineData("/city/1")]
+    public async Task TestDeleteCity(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.DeleteAsync(url);
+
+        Assert.Equal(System.Net.HttpStatusCode.NoContent, response?.StatusCode);
+    }
     
     
 }
