@@ -1,7 +1,7 @@
 [40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
       Storing keys in a directory '/root/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed.
 [40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[35]
-      No XML encryptor configured. Key {c43d3741-5f01-47dd-8fd4-ba22c654eb7c} may be persisted to storage in unencrypted form.
+      No XML encryptor configured. Key {c7732899-91a4-459e-a418-932f0a739f99} may be persisted to storage in unencrypted form.
 [40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[14]
       Now listening on: http://[::]:80
 [40m[32minfo[39m[22m[49m: Microsoft.Hosting.Lifetime[0]

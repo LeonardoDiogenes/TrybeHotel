@@ -12,6 +12,9 @@ using System.Xml;
 using System.IO;
 using TrybeHotel.Dto;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
+using System.Net.Http.Headers;
+
 
 public class LoginJson {
     public string? token { get; set; }
@@ -21,6 +24,7 @@ public class LoginJson {
 public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
 {
      public HttpClient _clientTest;
+     private LoginJson? _token;
 
      public IntegrationTest(WebApplicationFactory<Program> factory)
     {
@@ -77,11 +81,25 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
             });
         }).CreateClient();
     }
+
+    private async Task<string?> GetAuthTokenAsync()
+    {
+        var loginBody = new LoginDto {
+            Email = "ana@trybehotel.com",
+            Password = "Senha1"
+        };
+        var jsonBody = JsonConvert.SerializeObject(loginBody);
+        var loginContent = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+        var loginResponse = await _clientTest.PostAsync("/login", loginContent);
+        var loginResponseContent = await loginResponse.Content.ReadAsStringAsync();
+        var tokenObject = JsonConvert.DeserializeObject<LoginJson>(loginResponseContent);
+        return tokenObject?.token;
+    }
  
     [Trait("Category", "Meus testes")]
     [Theory(DisplayName = "Executando meus testes")]
     [InlineData("/city")]
-    public async Task TestGet(string url)
+    public async Task TestGetCity(string url)
     {
         var response = await _clientTest.GetAsync(url);
         var responseData = await response.Content.ReadAsStringAsync();
@@ -150,5 +168,73 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
         
     }
 
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Executando meus testes")]
+    [InlineData("/login")]
+    public async Task TestPostLogin(string url)
+    {
+        var loginBody = new LoginDto {
+            Email = "ana@trybehotel.com",
+            Password = "Senha1"
+        };
+        var jsonBody = JsonConvert.SerializeObject(loginBody);
+        var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+        var response = await _clientTest.PostAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+        var token = JsonConvert.DeserializeObject<LoginJson>(responseContent);
+        Assert.NotNull(token);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Executando meus testes")]
+    [InlineData("/city")]
+    public async Task TestPostCity(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var city = new City {
+            Name = "Recife",
+            State = "PE"
+        };
+        var json = JsonConvert.SerializeObject(city);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PostAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var newCity = JsonConvert.DeserializeObject<CityDto>(responseContent);
+
+        Assert.Equal(System.Net.HttpStatusCode.Created, response?.StatusCode);
+        Assert.NotNull(newCity);
+        Assert.Equal(city.Name, newCity!.Name);
+        Assert.Equal(city.State, newCity!.State);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Executando meus testes")]
+    [InlineData("/city")]
+    public async Task TestPutCity(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var city = new City {
+            CityId = 1,
+            Name = "Recife",
+            State = "PE"
+        };
+        var json = JsonConvert.SerializeObject(city);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PutAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var newCity = JsonConvert.DeserializeObject<CityDto>(responseContent);
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+        Assert.NotNull(newCity);
+        Assert.Equal(city.Name, newCity!.Name);
+        Assert.Equal(city.State, newCity!.State);
+    }
+    
     
 }
