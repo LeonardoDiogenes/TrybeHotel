@@ -24,7 +24,10 @@ namespace TrybeHotel.Repository
                              CityName = hotel.City!.Name,
                              State = hotel.City!.State
                          };
-            return hotels.ToList();
+            var hotelsList = hotels.ToList();
+            if (hotelsList.Count == 0)
+                throw new Exception("No hotels found");
+            return hotelsList;
         }
         
         public HotelDto AddHotel(Hotel hotel)
@@ -53,7 +56,7 @@ namespace TrybeHotel.Repository
 
         public void DeleteHotel(int id)
         {
-            var hotel = _context.Hotels.First(h => h.HotelId == id);
+            var hotel = _context.Hotels.FirstOrDefault(h => h.HotelId == id);
             if (hotel == null)
                 throw new Exception("Hotel not found");
 
@@ -63,9 +66,11 @@ namespace TrybeHotel.Repository
 
         public HotelDto UpdateHotel(Hotel hotel)
         {
-            var hotelToUpdate = _context.Hotels.First(h => h.HotelId == hotel.HotelId);
-            hotelToUpdate.City = _context.Cities.First(c => c.CityId == hotel.CityId);
+            var hotelToUpdate = _context.Hotels.FirstOrDefault(h => h.HotelId == hotel.HotelId);
             if (hotelToUpdate == null)
+                throw new Exception("Hotel not found");
+            hotelToUpdate.City = _context.Cities.FirstOrDefault(c => c.CityId == hotel.CityId);
+            if (hotelToUpdate.City == null)
                 throw new Exception("Hotel not found");
 
             hotelToUpdate.Name = hotel.Name;

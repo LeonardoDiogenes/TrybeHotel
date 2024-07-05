@@ -97,7 +97,7 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
     }
  
     [Trait("Category", "Meus testes")]
-    [Theory(DisplayName = "Executando meus testes")]
+    [Theory(DisplayName = "Testing GET /city")]
     [InlineData("/city")]
     public async Task TestGetCity(string url)
     {
@@ -113,7 +113,7 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Trait("Category", "Meus testes")]
-    [Theory(DisplayName = "Executando meus testes")]
+    [Theory(DisplayName = "Testing GET /hotel")]
     [InlineData("/hotel")]
     public async Task TestGetHotel(string url)
     {
@@ -129,7 +129,7 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Trait("Category", "Meus testes")]
-    [Theory(DisplayName = "Executando meus testes")]
+    [Theory(DisplayName = "Testing GET /room/{hotelId}")]
     [InlineData("/room/1")] //HotelId
     public async Task TestGetRoom(string url)
     {
@@ -145,7 +145,7 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Trait("Category", "Meus testes")]
-    [Theory(DisplayName = "Executando meus testes")]
+    [Theory(DisplayName = "Testing POST /user")]
     [InlineData("/user")]
     public async Task TestPostUser(string url)
     {
@@ -169,7 +169,7 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Trait("Category", "Meus testes")]
-    [Theory(DisplayName = "Executando meus testes")]
+    [Theory(DisplayName = "Testing POST /login")]
     [InlineData("/login")]
     public async Task TestPostLogin(string url)
     {
@@ -188,7 +188,7 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Trait("Category", "Meus testes")]
-    [Theory(DisplayName = "Executando meus testes")]
+    [Theory(DisplayName = "Testing POST /city")]
     [InlineData("/city")]
     public async Task TestPostCity(string url)
     {
@@ -212,7 +212,7 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Trait("Category", "Meus testes")]
-    [Theory(DisplayName = "Executando meus testes")]
+    [Theory(DisplayName = "Testing PUT /city")]
     [InlineData("/city")]
     public async Task TestPutCity(string url)
     {
@@ -237,7 +237,7 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Trait("Category", "Meus testes")]
-    [Theory(DisplayName = "Executando meus testes")]
+    [Theory(DisplayName = "Testing DELETE /city")]
     [InlineData("/city/1")]
     public async Task TestDeleteCity(string url)
     {
@@ -247,6 +247,169 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
         var response = await _clientTest.DeleteAsync(url);
 
         Assert.Equal(System.Net.HttpStatusCode.NoContent, response?.StatusCode);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing PUT /city error")]
+    [InlineData("/city")]
+    public async Task TestPutCityError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var city = new City {
+            CityId = 999,
+            Name = "Recife",
+            State = "PE"
+        };
+        var json = JsonConvert.SerializeObject(city);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PutAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
+        Assert.Equal("City not found", responseContent);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing DELETE /city error")]
+    [InlineData("/city/999")]
+    public async Task TestDeleteCityError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.DeleteAsync(url);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
+        Assert.Equal("City not found", responseContent);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing POST /hotel")]
+    [InlineData("/hotel")]
+    public async Task TestPostHotel(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var hotel = new Hotel {
+            Name = "Hotel Teste",
+            Address = "Address Teste",
+            CityId = 1
+        };
+        var json = JsonConvert.SerializeObject(hotel);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PostAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var newHotel = JsonConvert.DeserializeObject<HotelDto>(responseContent);
+
+        Assert.Equal(System.Net.HttpStatusCode.Created, response?.StatusCode);
+        Assert.NotNull(newHotel);
+        Assert.Equal(hotel.Name, newHotel!.Name);
+        Assert.Equal(hotel.Address, newHotel!.Address);
+        Assert.Equal(hotel.CityId, newHotel!.CityId);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing POST /hotel error")]
+    [InlineData("/hotel")]
+    public async Task TestPostHotelError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var hotel = new Hotel {
+            Name = "Hotel Teste",
+            Address = "Address Teste",
+            CityId = 999
+        };
+        var json = JsonConvert.SerializeObject(hotel);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PostAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
+        Assert.Equal("Error adding hotel", responseContent);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing PUT /hotel")]
+    [InlineData("/hotel")]
+    public async Task TestPutHotel(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var hotel = new Hotel {
+            HotelId = 1,
+            Name = "Hotel Teste",
+            Address = "Address Teste",
+            CityId = 1
+        };
+        var json = JsonConvert.SerializeObject(hotel);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PutAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var newHotel = JsonConvert.DeserializeObject<HotelDto>(responseContent);
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+        Assert.NotNull(newHotel);
+        Assert.Equal(hotel.Name, newHotel!.Name);
+        Assert.Equal(hotel.Address, newHotel!.Address);
+        Assert.Equal(hotel.CityId, newHotel!.CityId);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing PUT /hotel error")]
+    [InlineData("/hotel")]
+    public async Task TestPutHotelError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var hotel = new Hotel {
+            HotelId = 999,
+            Name = "Hotel Teste",
+            Address = "Address Teste",
+            CityId = 1
+        };
+        var json = JsonConvert.SerializeObject(hotel);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PutAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
+        Assert.Equal("Hotel not found", responseContent);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing DELETE /hotel")]
+    [InlineData("/hotel/1")]
+    public async Task TestDeleteHotel(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.DeleteAsync(url);
+
+        Assert.Equal(System.Net.HttpStatusCode.NoContent, response?.StatusCode);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing DELETE /hotel error")]
+    [InlineData("/hotel/999")]
+    public async Task TestDeleteHotelError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.DeleteAsync(url);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
+        Assert.Equal("Hotel not found", responseContent);
     }
     
     

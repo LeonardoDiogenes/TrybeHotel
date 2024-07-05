@@ -21,7 +21,14 @@ namespace TrybeHotel.Controllers
         // 4. Desenvolva o endpoint GET /hotel
         [HttpGet]
         public IActionResult GetHotels(){
-            return Ok(_repository.GetHotels());
+            try
+            {
+                return Ok(_repository.GetHotels());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         // 5. Desenvolva o endpoint POST /hotel
@@ -29,7 +36,14 @@ namespace TrybeHotel.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Policy = "Admin")]
         public IActionResult PostHotel([FromBody] Hotel hotel){
-            return Created("" ,_repository.AddHotel(hotel));
+            try
+            {
+                return Created("" ,_repository.AddHotel(hotel));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Error adding hotel");
+            }
         }
 
         [HttpDelete("{id}")]
