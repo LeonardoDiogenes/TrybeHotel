@@ -18,13 +18,23 @@ namespace TrybeHotel.Controllers
         
         [HttpGet]
         public IActionResult GetCities(){
-            return Ok(_repository.GetCities());
+            try
+            {
+                return Ok(_repository.GetCities());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Policy = "Admin")]
         public IActionResult PostCity([FromBody] City city){
+            if (!ModelState.IsValid) {
+                return BadRequest(new { error = "Invalid data" });
+            }
             return Created("" ,_repository.AddCity(city));
         }
         

@@ -20,7 +20,10 @@ namespace TrybeHotel.Repository
                              Name = city.Name,
                              State = city.State
                          };
-            return cities.ToList();
+            var cityList = cities.ToList();
+            if (cityList.Count == 0)
+                throw new Exception("No cities found");
+            return cityList;
         }
 
         public CityDto AddCity(City city)
