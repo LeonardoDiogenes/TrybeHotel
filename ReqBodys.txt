@@ -42,3 +42,12 @@ PUT Room
   "image": "https://via.placeholder.com/150",
   "hotelid": 1
 }
+
+POST Room
+
+{
+  "Name": "Quarto teste",
+  "Capacity": 5,
+  "Image": "stringurl",
+  "HotelId": 1
+}

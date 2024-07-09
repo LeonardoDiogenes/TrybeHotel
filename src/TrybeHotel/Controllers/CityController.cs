@@ -33,7 +33,7 @@ namespace TrybeHotel.Controllers
         [Authorize(Policy = "Admin")]
         public IActionResult PostCity([FromBody] City city){
             if (!ModelState.IsValid) {
-                return BadRequest(new { error = "Invalid data" });
+                return BadRequest("Invalid data");
             }
             return Created("" ,_repository.AddCity(city));
         }
