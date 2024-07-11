@@ -18,14 +18,31 @@ namespace TrybeHotel.Controllers
 
         [HttpGet("{HotelId}")]
         public IActionResult GetRoom(int HotelId){
-            return Ok(_repository.GetRooms(HotelId));
+            try
+            {
+                return Ok(_repository.GetRooms(HotelId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Policy = "Admin")]
         public IActionResult PostRoom([FromBody] Room room){
-            return Created("", _repository.AddRoom(room));
+            if (!ModelState.IsValid) {
+                return BadRequest("Invalid data");
+            }
+            try
+            {
+                return Created("", _repository.AddRoom(room));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpDelete("{RoomId}")]
@@ -33,8 +50,15 @@ namespace TrybeHotel.Controllers
         [Authorize(Policy = "Admin")]
         public IActionResult Delete(int RoomId)
         {
-            _repository.DeleteRoom(RoomId);
-            return NoContent();
+            try
+            {
+                _repository.DeleteRoom(RoomId);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPut("{RoomId}")]

@@ -477,6 +477,128 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(room.Image, newRoom!.Image);
         Assert.Equal(room.HotelId, newRoom!.Hotel!.HotelId);
     }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing DELETE /room")]
+    [InlineData("/room/1")]
+    public async Task TestDeleteRoom(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.DeleteAsync(url);
+
+        Assert.Equal(System.Net.HttpStatusCode.NoContent, response?.StatusCode);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing PUT /room")]
+    [InlineData("/room/1")]
+    public async Task TestPutRoom(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var room = new Room {
+            Name = "Room Teste",
+            Capacity = 2,
+            HotelId = 1
+        };
+        var json = JsonConvert.SerializeObject(room);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PutAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var newRoom = JsonConvert.DeserializeObject<RoomDto>(responseContent);
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+        Assert.NotNull(newRoom);
+        Assert.Equal(room.Name, newRoom!.Name);
+        Assert.Equal(room.Capacity, newRoom!.Capacity);
+        Assert.Equal(room.Image, newRoom!.Image);
+        Assert.Equal(room.HotelId, newRoom!.Hotel!.HotelId);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing POST /room invalid data error")]
+    [InlineData("/room")]
+    public async Task TestPostRoomError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var room = new Room {
+            Capacity = 2,
+            Image = "Image Teste",
+            HotelId = 1
+        };
+        var json = JsonConvert.SerializeObject(room);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PostAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
+        Assert.Equal("Invalid data", responseContent);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing POST /room Hotel not found error")]
+    [InlineData("/room")]
+    public async Task TestPostRoomHotelError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var room = new Room {
+            Name = "Room Teste",
+            Capacity = 2,
+            Image = "Image Teste",
+            HotelId = 999
+        };
+        var json = JsonConvert.SerializeObject(room);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PostAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
+        Assert.Equal("Hotel not found", responseContent);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing DELETE /room error")]
+    [InlineData("/room/999")]
+    public async Task TestDeleteRoomError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.DeleteAsync(url);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
+        Assert.Equal("Room not found", responseContent);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing PUT /room error")]
+    [InlineData("/room/999")]
+    public async Task TestPutRoomError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var room = new Room {
+            Name = "Room Teste",
+            Capacity = 2,
+            HotelId = 1
+        };
+        var json = JsonConvert.SerializeObject(room);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PutAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
+        Assert.Equal("Room not found", responseContent);
+    }
     
     
 }
