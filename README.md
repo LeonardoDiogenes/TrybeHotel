@@ -14,18 +14,24 @@ Este projeto simula uma API para a gestão de uma rede de hotéis, utilizando AS
 ## Rotas
 
 ### Rotas de Cidade (City)
-- **GET /city**  
+- **GET /city** 
   Lista todas as cidades.
 - **POST /city (admin)**  
   Cadastro de cidades.
 - **PUT /city (admin)**  
   Atualiza os dados de uma cidade existente.
+- **DELETE /city (admin)**
+  Remove uma cidade.
 
 ### Rotas de Hotel (Hotel)
 - **GET /hotel**  
   Lista todos os hotéis.
 - **POST /hotel (admin)**  
   Cadastro de hotéis.
+- **PUT /hotel (admin)**  
+  Atualiza hotel existente.
+- **DELETE /hotel (admin)**  
+  Remove um hotel.
 
 ### Rotas de Quarto (Room)
 - **GET /room/:hotelId**  
@@ -34,6 +40,9 @@ Este projeto simula uma API para a gestão de uma rede de hotéis, utilizando AS
   Cadastro de quarto em um determinado hotel.
 - **DELETE /room/:roomId (admin)**  
   Remoção de determinado quarto em determinado hotel.
+- **PUT /room/:roomId (admin)**
+  Atualização de um quarto de um determinado hotel.
+
 
 ### Rotas de Usuário (User)
 - **POST /user**  
@@ -54,6 +63,10 @@ Este projeto simula uma API para a gestão de uma rede de hotéis, utilizando AS
   Cadastro de reserva de um quarto em um hotel.
 - **GET /booking/:id (client)**  
   Lista uma reserva de um usuário cliente.
+- **PUT /booking/:id (client)**
+  Atualiza uma reserva de um usuário cliente.
+- **DELETE /booking/:id (client)**
+  Remove uma reserva de um usuário cliente.
 
 ### Rotas de Geolocalização (Geo)
 - **GET /geo/status**  
