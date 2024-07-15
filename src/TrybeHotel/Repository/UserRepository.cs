@@ -98,17 +98,29 @@ namespace TrybeHotel.Repository
             _context.SaveChanges();
         }
 
-        public UserDto Update(User user)
+        public UserDto Update(User user, int userId)
         {
-            var userToUpdate = _context.Users.FirstOrDefault(u => u.UserId == user.UserId);
+            var userToUpdate = _context.Users.FirstOrDefault(u => u.UserId == userId);
             if (userToUpdate == null)
             {
                 throw new InvalidOperationException("User not found");
             }
-            userToUpdate.Name = user.Name;
-            userToUpdate.Email = user.Email;
-            userToUpdate.UserType = user.UserType;
-            userToUpdate.Password = user.Password;
+            if (user.Name != null)
+            {
+                userToUpdate.Name = user.Name;
+            }
+            if (user.Email != null)
+            {
+                userToUpdate.Email = user.Email;
+            }
+            if (user.UserType != null)
+            {
+                userToUpdate.UserType = user.UserType;
+            }
+            if (user.Password != null)
+            {
+                userToUpdate.Password = user.Password;
+            }
             _context.SaveChanges();
             return new UserDto
             {

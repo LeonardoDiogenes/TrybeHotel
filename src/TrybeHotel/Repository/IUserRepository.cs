@@ -13,7 +13,7 @@ namespace TrybeHotel.Repository
 
         void Delete(int userId);
 
-        UserDto Update(User user);
+        UserDto Update(User user, int userId);
     }
 
 }

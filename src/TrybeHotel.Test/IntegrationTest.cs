@@ -24,7 +24,6 @@ public class LoginJson {
 public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
 {
      public HttpClient _clientTest;
-     private LoginJson? _token;
 
      public IntegrationTest(WebApplicationFactory<Program> factory)
     {
@@ -598,6 +597,127 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
 
         Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
         Assert.Equal("Room not found", responseContent);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing GET /user")]
+    [InlineData("/user")]
+    public async Task TestGetUser(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.GetAsync(url);
+        var responseData = await response.Content.ReadAsStringAsync();
+        var users = JsonConvert.DeserializeObject<List<UserDto>>(responseData);
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+        Assert.NotNull(users);
+        Assert.Contains(users, c => c.Name == "Ana" && c.Email == "ana@trybehotel.com");
+        Assert.Contains(users, c => c.Name == "Beatriz" && c.Email == "beatriz@trybehotel.com");
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing POST /user email already exists ERROR")]
+    [InlineData("/user")]
+    public async Task TestPostUserError(string url)
+    {
+        var newUser = new UserDtoInsert {
+            Name = "Ana",
+            Email = "ana@trybehotel.com",
+            Password = "Senha1"
+        };
+        var json = JsonConvert.SerializeObject(newUser);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _clientTest.PostAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.Conflict, response?.StatusCode);
+        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
+        Assert.Equal("User email already exists", (string)responseObject!.message);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing DELETE /user")]
+    [InlineData("/user/2")]
+    public async Task TestDeleteUser(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.DeleteAsync(url);
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing DELETE /user error")]
+    [InlineData("/user/999")]
+    public async Task TestDeleteUserError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.DeleteAsync(url);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.Conflict, response?.StatusCode);
+        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
+        Assert.Equal("User not found", (string)responseObject!.message);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing PUT /user")]
+    [InlineData("/user/1")]
+    public async Task TestPutUser(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var user = new User {
+            Name = "Ana",
+            Email = "newAnaEmail@teste.com",
+            Password = "Senha1",
+            UserType = "admin"
+        };
+
+        var json = JsonConvert.SerializeObject(user);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PutAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var newUser = JsonConvert.DeserializeObject<UserDto>(responseContent);
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+        Assert.NotNull(newUser);
+        Assert.Equal(user.Name, newUser!.Name);
+        Assert.Equal(user.Email, newUser!.Email);
+        Assert.Equal(user.UserType, newUser!.UserType);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing PUT /user error")]
+    [InlineData("/user/999")]
+    public async Task TestPutUserError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var user = new User {
+            Name = "Ana",
+            Email = "newAnaEmail@teste.com",
+            Password = "Senha1",
+            UserType = "admin"
+        };
+
+        var json = JsonConvert.SerializeObject(user);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PutAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.Conflict, response?.StatusCode);
+        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
+        Assert.Equal("User not found", (string)responseObject!.message);
     }
     
     

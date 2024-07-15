@@ -64,15 +64,15 @@ namespace TrybeHotel.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{userId}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Policy = "Admin")]
 
-        public IActionResult Update([FromBody] User user)
+        public IActionResult Update(int userId, [FromBody] User user)
         {
             try
             {
-                var updatedUser = _repository.Update(user);
+                var updatedUser = _repository.Update(user, userId);
                 return Ok(updatedUser);
             }
             catch (InvalidOperationException ex)

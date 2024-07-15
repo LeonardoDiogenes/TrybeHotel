@@ -49,7 +49,7 @@ namespace TrybeHotel.Services
                 {
                     using var responseStream = await response.Content.ReadAsStreamAsync();
                     var content = await JsonSerializer.DeserializeAsync<JsonElement[]>(responseStream);
-                    if (content.Length > 0)
+                    if (content != null)
                     {
                         var geoResponse = new GeoDtoResponse
                         {

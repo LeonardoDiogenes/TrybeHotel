@@ -51,3 +51,9 @@ POST Room
   "Image": "stringurl",
   "HotelId": 1
 }
+
+{
+  "Name": "Hotel Teste Geo",
+  "Address": "Rua Pintarroxo",
+  "State": "PR"
+}
