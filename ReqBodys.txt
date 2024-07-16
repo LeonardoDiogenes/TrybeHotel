@@ -57,3 +57,13 @@ POST Room
   "Address": "Rua Pintarroxo",
   "State": "PR"
 }
+
+POST booking
+
+{
+  "GuestEmail": "Hotel Teste Geo 2",
+  "Checkin": "Rua Pintarroxo",
+  "Checkout": "PR",
+  "GuestQuant": 1,
+  "RoomId": 1
+}

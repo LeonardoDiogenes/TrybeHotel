@@ -14,7 +14,7 @@ namespace TrybeHotel.Repository
         public BookingResponse Add(BookingDtoInsert booking, string userEmail)
         {
             var room = _context.Rooms.First(r => r.RoomId == booking.RoomId);
-            var userId = _context.Users.First(u => u.Email == userEmail).UserId;
+            var user = _context.Users.First(u => u.Email == userEmail);
             if (booking.GuestQuant > room.Capacity)
             {
                 throw new InvalidOperationException("Guest quantity over room capacity");
@@ -26,7 +26,7 @@ namespace TrybeHotel.Repository
                 CheckOut = booking.Checkout,
                 GuestQuant = booking.GuestQuant,
                 RoomId = booking.RoomId,
-                UserId = userId
+                UserId = user.UserId
             };
             _context.Bookings.Add(newBooking);
             _context.SaveChanges();
@@ -35,6 +35,7 @@ namespace TrybeHotel.Repository
             var city = _context.Cities.First(c => c.CityId == hotel.CityId);
             return new BookingResponse
             {
+                GuestName = user.Name,
                 BookingId = newBooking.BookingId,
                 Checkin = newBooking.CheckIn,
                 Checkout = newBooking.CheckOut,
@@ -72,6 +73,7 @@ namespace TrybeHotel.Repository
             var city = _context.Cities.First(c => c.CityId == hotel.CityId);
             return new BookingResponse
             {
+                GuestName = guest.Name,
                 BookingId = booking.BookingId,
                 Checkin = booking.CheckIn,
                 Checkout = booking.CheckOut,
@@ -103,14 +105,14 @@ namespace TrybeHotel.Repository
         public BookingResponse UpdateBooking(int bookingId, BookingDtoInsert booking, string userEmail)
         {
             var room = _context.Rooms.First(r => r.RoomId == booking.RoomId);
-            var userId = _context.Users.First(u => u.Email == userEmail).UserId;
+            var user = _context.Users.First(u => u.Email == userEmail);
             if (booking.GuestQuant > room.Capacity)
             {
                 throw new InvalidOperationException("Guest quantity over room capacity");
             }
 
             var bookingToUpdate = _context.Bookings.First(b => b.BookingId == bookingId);
-            if (bookingToUpdate.UserId != userId)
+            if (bookingToUpdate.UserId != user.UserId)
             {
                 throw new InvalidOperationException("User not allowed to update this booking");
             }
@@ -125,6 +127,7 @@ namespace TrybeHotel.Repository
             var city = _context.Cities.First(c => c.CityId == hotel.CityId);
             return new BookingResponse
             {
+                GuestName = user.Name,
                 BookingId = bookingToUpdate.BookingId,
                 Checkin = bookingToUpdate.CheckIn,
                 Checkout = bookingToUpdate.CheckOut,

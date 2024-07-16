@@ -1,18 +1,12 @@
 namespace TrybeHotel.Test;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using TrybeHotel.Models;
 using TrybeHotel.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
-using System.Diagnostics;
-using System.Xml;
-using System.IO;
 using TrybeHotel.Dto;
 using System.Text;
-using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
 
 
@@ -86,6 +80,20 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
         var loginBody = new LoginDto {
             Email = "ana@trybehotel.com",
             Password = "Senha1"
+        };
+        var jsonBody = JsonConvert.SerializeObject(loginBody);
+        var loginContent = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+        var loginResponse = await _clientTest.PostAsync("/login", loginContent);
+        var loginResponseContent = await loginResponse.Content.ReadAsStringAsync();
+        var tokenObject = JsonConvert.DeserializeObject<LoginJson>(loginResponseContent);
+        return tokenObject?.token;
+    }
+
+    private async Task<string?> GetAuthClientTokenAsync()
+    {
+        var loginBody = new LoginDto {
+            Email = "beatriz@trybehotel.com",
+            Password = "Senha2"
         };
         var jsonBody = JsonConvert.SerializeObject(loginBody);
         var loginContent = new StringContent(jsonBody, Encoding.UTF8, "application/json");
@@ -718,6 +726,79 @@ public class IntegrationTest: IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(System.Net.HttpStatusCode.Conflict, response?.StatusCode);
         var responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
         Assert.Equal("User not found", (string)responseObject!.message);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing POST /booking")]
+    [InlineData("/booking")]
+    public async Task TestPostBooking(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var booking = new BookingDtoInsert {
+            Checkin = new DateTime(2023, 07, 02),
+            Checkout = new DateTime(2023, 07, 03),
+            GuestQuant = 1,
+            RoomId = 1
+        };
+        var json = JsonConvert.SerializeObject(booking);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PostAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var newBooking = JsonConvert.DeserializeObject<BookingResponse>(responseContent);
+
+        Assert.Equal(System.Net.HttpStatusCode.Created, response?.StatusCode);
+        Assert.NotNull(newBooking);
+        Assert.Equal(booking.Checkin, newBooking!.Checkin);
+        Assert.Equal(booking.Checkout, newBooking!.Checkout);
+        Assert.Equal(booking.GuestQuant, newBooking!.GuestQuant);
+        Assert.Equal(booking.RoomId, newBooking!.Room!.RoomId);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing POST /booking overcapacity error")]
+    [InlineData("/booking")]
+    public async Task TestPostBookingError(string url)
+    {
+        var token = await GetAuthTokenAsync();
+
+        var booking = new BookingDtoInsert {
+            Checkin = new DateTime(2023, 07, 02),
+            Checkout = new DateTime(2023, 07, 03),
+            GuestQuant = 50,
+            RoomId = 1
+        };
+        var json = JsonConvert.SerializeObject(booking);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.PostAsync(url, content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response?.StatusCode);
+        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
+        Assert.Equal("Guest quantity over room capacity", (string)responseObject!.message);
+    }
+
+    [Trait("Category", "Meus testes")]
+    [Theory(DisplayName = "Testing GET /booking")]
+    [InlineData("/booking/1")]
+    public async Task TestGetBooking(string url)
+    {
+        var token = await GetAuthClientTokenAsync();
+
+        _clientTest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _clientTest.GetAsync(url);
+        var responseData = await response.Content.ReadAsStringAsync();
+        var booking = JsonConvert.DeserializeObject<BookingResponse>(responseData);
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response?.StatusCode);
+        Assert.NotNull(booking);
+        Assert.Equal(1, booking!.BookingId);
+        Assert.Equal(new DateTime(2023, 07, 02), booking!.Checkin);
+        Assert.Equal(new DateTime(2023, 07, 03), booking!.Checkout);
+        Assert.Equal(1, booking!.GuestQuant);
+        Assert.Equal(1, booking!.Room!.RoomId);
     }
     
     
