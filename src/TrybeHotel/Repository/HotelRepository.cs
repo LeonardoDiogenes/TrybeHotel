@@ -18,6 +18,7 @@ namespace TrybeHotel.Repository
                          select new HotelDto
                          {
                              HotelId = hotel.HotelId,
+                             Image = hotel.Image,
                              Name = hotel.Name,
                              Address = hotel.Address,
                              CityId = hotel.CityId,
@@ -41,6 +42,7 @@ namespace TrybeHotel.Repository
                 return new HotelDto
                 {
                     HotelId = newHotel.HotelId,
+                    Image = newHotel.Image,
                     Name = newHotel.Name,
                     Address = newHotel.Address,
                     CityId = newHotel.CityId,
@@ -76,11 +78,13 @@ namespace TrybeHotel.Repository
             hotelToUpdate.Name = hotel.Name;
             hotelToUpdate.Address = hotel.Address;
             hotelToUpdate.CityId = hotel.CityId;
+            hotelToUpdate.Image = hotel.Image;
             _context.SaveChanges();
 
             return new HotelDto
             {
                 HotelId = hotelToUpdate.HotelId,
+                Image = hotelToUpdate.Image,
                 Name = hotelToUpdate.Name,
                 Address = hotelToUpdate.Address,
                 CityId = hotelToUpdate.CityId,

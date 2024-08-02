@@ -6,6 +6,7 @@ using TrybeHotel.Repository;
 // 1. Implemente as models da aplicação
 public class Hotel {
 	public int HotelId {get; set;}
+	public string? Image {get; set;}
 	public string? Name {get; set;}
 	public string? Address {get; set;}
 

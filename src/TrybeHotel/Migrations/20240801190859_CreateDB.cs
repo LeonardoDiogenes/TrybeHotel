@@ -19,8 +19,8 @@ namespace TrybeHotel.Migrations
                 {
                     CityId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    State = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,7 +70,7 @@ namespace TrybeHotel.Migrations
                 {
                     RoomId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HotelId = table.Column<int>(type: "int", nullable: false)
@@ -129,8 +129,8 @@ namespace TrybeHotel.Migrations
                 columns: new[] { "UserId", "Email", "Name", "Password", "UserType" },
                 values: new object[,]
                 {
-                    { 1, "example@example", "User 1", "123", "Admin" },
-                    { 2, "example2@example", "User 2", "123", "User" }
+                    { 1, "example@example", "User 1", "123", "admin" },
+                    { 2, "example2@example", "User 2", "123", "client" }
                 });
 
             migrationBuilder.InsertData(
@@ -156,8 +156,8 @@ namespace TrybeHotel.Migrations
                 columns: new[] { "BookingId", "CheckIn", "CheckOut", "GuestQuant", "RoomId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 6, 30, 22, 30, 29, 126, DateTimeKind.Local).AddTicks(5105), new DateTime(2024, 7, 1, 22, 30, 29, 126, DateTimeKind.Local).AddTicks(5129), 2, 1, 1 },
-                    { 2, new DateTime(2024, 6, 30, 22, 30, 29, 126, DateTimeKind.Local).AddTicks(5134), new DateTime(2024, 7, 1, 22, 30, 29, 126, DateTimeKind.Local).AddTicks(5135), 1, 2, 2 }
+                    { 1, new DateTime(2024, 8, 1, 16, 8, 59, 559, DateTimeKind.Local).AddTicks(925), new DateTime(2024, 8, 2, 16, 8, 59, 559, DateTimeKind.Local).AddTicks(951), 2, 1, 1 },
+                    { 2, new DateTime(2024, 8, 1, 16, 8, 59, 559, DateTimeKind.Local).AddTicks(957), new DateTime(2024, 8, 2, 16, 8, 59, 559, DateTimeKind.Local).AddTicks(958), 1, 2, 2 }
                 });
 
             migrationBuilder.CreateIndex(

@@ -12,7 +12,7 @@ using TrybeHotel.Repository;
 namespace TrybeHotel.Migrations
 {
     [DbContext(typeof(TrybeHotelContext))]
-    [Migration("20240701013029_CreateDB")]
+    [Migration("20240801190859_CreateDB")]
     partial class CreateDB
     {
         /// <inheritdoc />
@@ -60,8 +60,8 @@ namespace TrybeHotel.Migrations
                         new
                         {
                             BookingId = 1,
-                            CheckIn = new DateTime(2024, 6, 30, 22, 30, 29, 126, DateTimeKind.Local).AddTicks(5105),
-                            CheckOut = new DateTime(2024, 7, 1, 22, 30, 29, 126, DateTimeKind.Local).AddTicks(5129),
+                            CheckIn = new DateTime(2024, 8, 1, 16, 8, 59, 559, DateTimeKind.Local).AddTicks(925),
+                            CheckOut = new DateTime(2024, 8, 2, 16, 8, 59, 559, DateTimeKind.Local).AddTicks(951),
                             GuestQuant = 2,
                             RoomId = 1,
                             UserId = 1
@@ -69,8 +69,8 @@ namespace TrybeHotel.Migrations
                         new
                         {
                             BookingId = 2,
-                            CheckIn = new DateTime(2024, 6, 30, 22, 30, 29, 126, DateTimeKind.Local).AddTicks(5134),
-                            CheckOut = new DateTime(2024, 7, 1, 22, 30, 29, 126, DateTimeKind.Local).AddTicks(5135),
+                            CheckIn = new DateTime(2024, 8, 1, 16, 8, 59, 559, DateTimeKind.Local).AddTicks(957),
+                            CheckOut = new DateTime(2024, 8, 2, 16, 8, 59, 559, DateTimeKind.Local).AddTicks(958),
                             GuestQuant = 1,
                             RoomId = 2,
                             UserId = 2
@@ -86,10 +86,14 @@ namespace TrybeHotel.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CityId"));
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
 
                     b.HasKey("CityId");
 
@@ -168,7 +172,9 @@ namespace TrybeHotel.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.HasKey("RoomId");
 
@@ -230,7 +236,7 @@ namespace TrybeHotel.Migrations
                             Email = "example@example",
                             Name = "User 1",
                             Password = "123",
-                            UserType = "Admin"
+                            UserType = "admin"
                         },
                         new
                         {
@@ -238,7 +244,7 @@ namespace TrybeHotel.Migrations
                             Email = "example2@example",
                             Name = "User 2",
                             Password = "123",
-                            UserType = "User"
+                            UserType = "client"
                         });
                 });
 
