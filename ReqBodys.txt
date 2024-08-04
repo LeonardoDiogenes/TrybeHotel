@@ -67,3 +67,14 @@ POST booking
   "GuestQuant": 1,
   "RoomId": 1
 }
+
+
+POST /hotel
+
+{
+  "image": "https://lh3.googleusercontent.com/p/AF1QipMcgRNgmvFi0bsp5HKEbacwAyS1IlwA5ZZCEtXS=s680-w680-h510",
+  "name": "Hotel Thermas",
+  "Address": "Av. Lauro Monte, 2001",
+  "CityId": 3
+  
+}

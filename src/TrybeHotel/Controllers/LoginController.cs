@@ -24,7 +24,10 @@ namespace TrybeHotel.Controllers
             {
                 var user = _repository.Login(login);
                 var token = new TokenGenerator().Generate(user);
-                return Ok(new { token = token });
+                return Ok(new {
+                    token = token,
+                    user = user
+                });
             }
             catch (InvalidOperationException e)
             {
