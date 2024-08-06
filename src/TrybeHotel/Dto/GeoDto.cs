@@ -14,6 +14,7 @@ namespace TrybeHotel.Dto {
         public int HotelId { get; set; }
         public string? Name { get; set; }
         public string? Address { get; set; }
+        public string? Image { get; set; }
         public string? CityName { get; set; }
         public string? State { get; set; }
         public int Distance { get; set; }
