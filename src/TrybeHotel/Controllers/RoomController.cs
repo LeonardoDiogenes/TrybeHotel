@@ -16,6 +16,20 @@ namespace TrybeHotel.Controllers
             _repository = repository;
         }
 
+        [HttpGet]
+
+        public IActionResult GetAllRooms()
+        {
+            try
+            {
+                return Ok(_repository.GetAllRooms());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
         [HttpGet("{HotelId}")]
         public IActionResult GetRoom(int HotelId){
             try

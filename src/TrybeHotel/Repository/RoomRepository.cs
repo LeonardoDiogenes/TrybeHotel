@@ -11,6 +11,32 @@ namespace TrybeHotel.Repository
             _context = context;
         }
 
+        public IEnumerable<RoomDto> GetAllRooms()
+        {
+            var rooms = from room in _context.Rooms
+                        select new RoomDto
+                        {
+                            RoomId = room.RoomId,
+                            Name = room.Name,
+                            Capacity = room.Capacity,
+                            Image = room.Image,
+                            Hotel = new HotelDto
+                            {
+                                HotelId = room.Hotel!.HotelId,
+                                Name = room.Hotel.Name,
+                                Address = room.Hotel.Address,
+                                CityId = room.Hotel.CityId,
+                                CityName = room.Hotel.City!.Name,
+                                State = room.Hotel.City.State
+                            }
+                        };
+            if (rooms.Count() == 0)
+            {
+                throw new Exception("No rooms found");
+            }
+            return rooms;
+        }
+        
         public IEnumerable<RoomDto> GetRooms(int HotelId)
         {
             var hotel = _context.Hotels.Find(HotelId);
