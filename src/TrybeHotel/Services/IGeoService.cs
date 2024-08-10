@@ -9,5 +9,7 @@ namespace TrybeHotel.Services
         Task<List<GeoDtoHotelResponse>> GetHotelsByGeo(GeoDto geoDto, IHotelRepository repository);
 
         Task<GeoDtoResponse> GetGeoLocation(GeoDto geoDto);
+
+        Task<List<RoomDtoResponse>> GetRoomsByGeo(GeoDto geoDto, IRoomRepository repository);
     }
 }

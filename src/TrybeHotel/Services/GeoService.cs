@@ -114,6 +114,35 @@ namespace TrybeHotel.Services
             return response.OrderBy(h => h.Distance).ToList();
         }
 
+        public async Task<List<RoomDtoResponse>> GetRoomsByGeo(GeoDto geoDto, IRoomRepository repository)
+        {
+            var location = await GetGeoLocation(geoDto);
+            var rooms = repository.GetAllRooms().ToList();
+            var response = new List<RoomDtoResponse>();
+            for (int i = 0; i < rooms.Count(); i++)
+            {
+                var roomLocation = new GeoDto()
+                {
+                    Address = rooms[i].Hotel.Address,
+                    City = rooms[i].Hotel.CityName,
+                    State = rooms[i].Hotel.State
+                };
+                var roomGeo = await GetGeoLocation(roomLocation);
+                var distance = CalculateDistance(location.lat!, location.lon!, roomGeo.lat!, roomGeo.lon!);
+                var roomResponse = new RoomDtoResponse
+                {
+                    RoomId = rooms[i].RoomId,
+                    Name = rooms[i].Name,
+                    Capacity = rooms[i].Capacity,
+                    Image = rooms[i].Image,
+                    Hotel = rooms[i].Hotel,
+                    Distance = distance
+                };
+                response.Add(roomResponse);
+            }
+            return response.OrderBy(r => r.Distance).ToList();
+        }
+
 
         public int CalculateDistance(string latitudeOrigin, string longitudeOrigin, string latitudeDestiny, string longitudeDestiny)
         {

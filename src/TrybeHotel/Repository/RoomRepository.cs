@@ -30,11 +30,13 @@ namespace TrybeHotel.Repository
                                 State = room.Hotel.City.State
                             }
                         };
-            if (rooms.Count() == 0)
+            var roomsList = rooms.ToList();
+            
+            if (roomsList.Count() == 0)
             {
                 throw new Exception("No rooms found");
             }
-            return rooms;
+            return roomsList;
         }
         
         public IEnumerable<RoomDto> GetRooms(int HotelId)
