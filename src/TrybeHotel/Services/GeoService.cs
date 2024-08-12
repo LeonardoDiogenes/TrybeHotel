@@ -123,9 +123,9 @@ namespace TrybeHotel.Services
             {
                 var roomLocation = new GeoDto()
                 {
-                    Address = rooms[i].Hotel.Address,
-                    City = rooms[i].Hotel.CityName,
-                    State = rooms[i].Hotel.State
+                    Address = rooms[i].Hotel!.Address,
+                    City = rooms[i].Hotel!.CityName,
+                    State = rooms[i].Hotel!.State
                 };
                 var roomGeo = await GetGeoLocation(roomLocation);
                 var distance = CalculateDistance(location.lat!, location.lon!, roomGeo.lat!, roomGeo.lon!);
