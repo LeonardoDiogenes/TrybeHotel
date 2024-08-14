@@ -21,32 +21,54 @@ public class TrybeHotelContext : DbContext, ITrybeHotelContext
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
-        base.OnModelCreating(modelBuilder);
+    base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<City>().HasData(
-            new City {CityId = 1, Name = "São Paulo", State = "SP"},
-            new City {CityId = 2, Name = "Rio de Janeiro", State = "RJ"}
+    // Configuração da conversão da propriedade Image
+    modelBuilder.Entity<Hotel>()
+        .Property(h => h.Image)
+        .HasConversion(
+            v => string.Join(";", v),  // Converter List<string> para string ao salvar no banco de dados
+            v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()  // Converter string para List<string> ao ler do banco de dados
         );
 
-        modelBuilder.Entity<Hotel>().HasData(
-            new Hotel {HotelId = 1, Name = "Hotel 1", Address = "Endereço 1", CityId = 1},
-            new Hotel {HotelId = 2, Name = "Hotel 2", Address = "Endereço 2", CityId = 2}
-        );
+    modelBuilder.Entity<City>().HasData(
+        new City {CityId = 1, Name = "São Paulo", State = "SP"},
+        new City {CityId = 2, Name = "Rio de Janeiro", State = "RJ"}
+    );
 
-        modelBuilder.Entity<Room>().HasData(
-            new Room {RoomId = 1, Name = "Quarto 1", HotelId = 1, Capacity = 2, Image = "https://via.placeholder.com/150"},
-            new Room {RoomId = 2, Name = "Quarto 2", HotelId = 2, Capacity = 3, Image = "https://via.placeholder.com/150"}
-        );
+    // Atualização dos seeders de hotéis
+    modelBuilder.Entity<Hotel>().HasData(
+        new Hotel {
+            HotelId = 1, 
+            Name = "Hotel 1", 
+            Address = "Endereço 1", 
+            CityId = 1,
+            Image = new List<string> { "https://via.placeholder.com/150", "https://via.placeholder.com/200" }  // Exemplo de múltiplas imagens
+        },
+        new Hotel {
+            HotelId = 2, 
+            Name = "Hotel 2", 
+            Address = "Endereço 2", 
+            CityId = 2,
+            Image = new List<string> { "https://via.placeholder.com/150", "https://via.placeholder.com/200" }  // Exemplo de múltiplas imagens
+        }
+    );
 
-        modelBuilder.Entity<User>().HasData(
-            new User {UserId = 1, Name = "User 1", Email = "example@example", Password = "123", UserType = "admin"},
-            new User {UserId = 2, Name = "User 2", Email = "example2@example", Password = "123", UserType = "client"}
-        );
+    modelBuilder.Entity<Room>().HasData(
+        new Room {RoomId = 1, Name = "Quarto 1", HotelId = 1, Capacity = 2, Image = "https://via.placeholder.com/150"},
+        new Room {RoomId = 2, Name = "Quarto 2", HotelId = 2, Capacity = 3, Image = "https://via.placeholder.com/150"}
+    );
 
-        modelBuilder.Entity<Booking>().HasData(
-            new Booking {BookingId = 1, UserId = 1, RoomId = 1, CheckIn = DateTime.Now, CheckOut = DateTime.Now.AddDays(1), GuestQuant = 2},
-            new Booking {BookingId = 2, UserId = 2, RoomId = 2, CheckIn = DateTime.Now, CheckOut = DateTime.Now.AddDays(1), GuestQuant = 1}
-        );
-    }
+    modelBuilder.Entity<User>().HasData(
+        new User {UserId = 1, Name = "User 1", Email = "example@example", Password = "123", UserType = "admin"},
+        new User {UserId = 2, Name = "User 2", Email = "example2@example", Password = "123", UserType = "client"}
+    );
+
+    modelBuilder.Entity<Booking>().HasData(
+        new Booking {BookingId = 1, UserId = 1, RoomId = 1, CheckIn = DateTime.Now, CheckOut = DateTime.Now.AddDays(1), GuestQuant = 2},
+        new Booking {BookingId = 2, UserId = 2, RoomId = 2, CheckIn = DateTime.Now, CheckOut = DateTime.Now.AddDays(1), GuestQuant = 1}
+    );
+}
+
 
 }

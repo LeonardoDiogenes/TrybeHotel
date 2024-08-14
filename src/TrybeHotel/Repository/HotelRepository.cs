@@ -73,7 +73,7 @@ namespace TrybeHotel.Repository
                 throw new Exception("Hotel not found");
             hotelToUpdate.City = _context.Cities.FirstOrDefault(c => c.CityId == hotel.CityId);
             if (hotelToUpdate.City == null)
-                throw new Exception("Hotel not found");
+                throw new Exception("City not found");
 
             hotelToUpdate.Name = hotel.Name;
             hotelToUpdate.Address = hotel.Address;
