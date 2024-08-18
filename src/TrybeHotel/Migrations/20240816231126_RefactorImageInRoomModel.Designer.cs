@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrybeHotel.Repository;
 
@@ -11,9 +12,11 @@ using TrybeHotel.Repository;
 namespace TrybeHotel.Migrations
 {
     [DbContext(typeof(TrybeHotelContext))]
-    partial class TrybeHotelContextModelSnapshot : ModelSnapshot
+    [Migration("20240816231126_RefactorImageInRoomModel")]
+    partial class RefactorImageInRoomModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,8 +60,8 @@ namespace TrybeHotel.Migrations
                         new
                         {
                             BookingId = 1,
-                            CheckIn = new DateTime(2024, 8, 18, 1, 51, 20, 654, DateTimeKind.Local).AddTicks(1106),
-                            CheckOut = new DateTime(2024, 8, 19, 1, 51, 20, 654, DateTimeKind.Local).AddTicks(1134),
+                            CheckIn = new DateTime(2024, 8, 16, 20, 11, 26, 234, DateTimeKind.Local).AddTicks(624),
+                            CheckOut = new DateTime(2024, 8, 17, 20, 11, 26, 234, DateTimeKind.Local).AddTicks(660),
                             GuestQuant = 2,
                             RoomId = 1,
                             UserId = 1
@@ -66,8 +69,8 @@ namespace TrybeHotel.Migrations
                         new
                         {
                             BookingId = 2,
-                            CheckIn = new DateTime(2024, 8, 18, 1, 51, 20, 654, DateTimeKind.Local).AddTicks(1140),
-                            CheckOut = new DateTime(2024, 8, 19, 1, 51, 20, 654, DateTimeKind.Local).AddTicks(1141),
+                            CheckIn = new DateTime(2024, 8, 16, 20, 11, 26, 234, DateTimeKind.Local).AddTicks(668),
+                            CheckOut = new DateTime(2024, 8, 17, 20, 11, 26, 234, DateTimeKind.Local).AddTicks(668),
                             GuestQuant = 1,
                             RoomId = 2,
                             UserId = 2
@@ -141,18 +144,18 @@ namespace TrybeHotel.Migrations
                         new
                         {
                             HotelId = 1,
-                            Address = "Largo do Arouche, 150",
+                            Address = "Endereço 1",
                             CityId = 1,
-                            Image = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/17623873.jpg?k=b952cb80dc3ecc4df3b662e9544c8ef0a2cfd480c92d3654d86c9254d7bcff4e&o=&hp=1;https://cf.bstatic.com/xdata/images/hotel/max1024x768/44459472.jpg?k=072ac9d3e1405cd3e8a922cddf710f955c912da68ac3433acfed8f73adc9c513&o=&hp=1",
-                            Name = "San Raphael Hotel"
+                            Image = "https://via.placeholder.com/150;https://via.placeholder.com/200",
+                            Name = "Hotel 1"
                         },
                         new
                         {
                             HotelId = 2,
-                            Address = "Rua Senador Dantas, 25",
+                            Address = "Endereço 2",
                             CityId = 2,
-                            Image = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/5139993.jpg?k=19d18100c9cfd4fce562972ace815dbe9e6b91d88d400d10be3510a64ec616e8&o=&hp=1;https://cf.bstatic.com/xdata/images/hotel/max1024x768/46891345.jpg?k=b65862e317f0e83af7026b60d73c2b52925a098f1bfdbc2d4a4b5f24a0fff585&o=&hp=1",
-                            Name = "Hotel Atlântico Business Centro"
+                            Image = "https://via.placeholder.com/150;https://via.placeholder.com/200",
+                            Name = "Hotel 2"
                         });
                 });
 
@@ -190,7 +193,7 @@ namespace TrybeHotel.Migrations
                             RoomId = 1,
                             Capacity = 2,
                             HotelId = 1,
-                            Image = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/360677173.jpg?k=c1083d43ddb2d9415b25304a6f7cd78100e7c737eaacd33273f67b3c904c4a5c&o=&hp=1;https://cf.bstatic.com/xdata/images/hotel/max1024x768/266289735.jpg?k=291d57f71acd1295c410553c4d052f0e299c0f2f48bb83595cf7bf2b97238513&o=&hp=1",
+                            Image = "https://via.placeholder.com/150;https://via.placeholder.com/200",
                             Name = "Quarto 1"
                         },
                         new
@@ -198,7 +201,7 @@ namespace TrybeHotel.Migrations
                             RoomId = 2,
                             Capacity = 3,
                             HotelId = 2,
-                            Image = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/46891345.jpg?k=b65862e317f0e83af7026b60d73c2b52925a098f1bfdbc2d4a4b5f24a0fff585&o=&hp=1;https://cf.bstatic.com/xdata/images/hotel/max1024x768/46903249.jpg?k=f8fb07eb763acad38a4804b58bc05f3dc285d89338d1d6ac02b31e6f35bd5a1e&o=&hp=1",
+                            Image = "https://via.placeholder.com/150;https://via.placeholder.com/200",
                             Name = "Quarto 2"
                         });
                 });

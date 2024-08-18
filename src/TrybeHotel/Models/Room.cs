@@ -11,7 +11,7 @@ public class Room {
 	[Required(ErrorMessage = "Capacity is required")]
 	[Range(1, 10, ErrorMessage = "Capacity must be between 1 and 10")]
 	public int Capacity {get; set;}
-	public string? Image {get; set;}
+	public List<string>? Image {get; set;}
 	[Required(ErrorMessage = "HotelId is required")]
 	public int HotelId {get; set;}
 	public Hotel? Hotel {get; set;}

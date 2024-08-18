@@ -78,3 +78,13 @@ POST /hotel
   "CityId": 3
   
 }
+
+PUT /hotel
+
+{
+  "hotelId":  1,
+  "Image": ["https://cf.bstatic.com/xdata/images/hotel/max1024x768/431731064.jpg?k=2bd9bf034d8c884d88f1858e8c5ab43bc8428053d5fff34f08942dc8e8587c84&o=&hp=1"],
+  "Name": "Capsula Hotel",
+  "Address": "R. da Consolação, 1813",
+  "CityId": 1
+}
