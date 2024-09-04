@@ -78,6 +78,8 @@ public class TrybeHotelContext : DbContext, ITrybeHotelContext
                 Name = "Quarto 1",
                 HotelId = 1,
                 Capacity = 2,
+                KingSizeBeds = 1,
+                SingleSizeBeds = 0,
                 Image = new List<string> {
                     "https://cf.bstatic.com/xdata/images/hotel/max1024x768/360677173.jpg?k=c1083d43ddb2d9415b25304a6f7cd78100e7c737eaacd33273f67b3c904c4a5c&o=&hp=1",
                     "https://cf.bstatic.com/xdata/images/hotel/max1024x768/266289735.jpg?k=291d57f71acd1295c410553c4d052f0e299c0f2f48bb83595cf7bf2b97238513&o=&hp=1"
@@ -89,6 +91,8 @@ public class TrybeHotelContext : DbContext, ITrybeHotelContext
                 Name = "Quarto 2",
                 HotelId = 2,
                 Capacity = 3,
+                KingSizeBeds = 1,
+                SingleSizeBeds = 1,
                 Image = new List<string> {
                     "https://cf.bstatic.com/xdata/images/hotel/max1024x768/46891345.jpg?k=b65862e317f0e83af7026b60d73c2b52925a098f1bfdbc2d4a4b5f24a0fff585&o=&hp=1",
                     "https://cf.bstatic.com/xdata/images/hotel/max1024x768/46903249.jpg?k=f8fb07eb763acad38a4804b58bc05f3dc285d89338d1d6ac02b31e6f35bd5a1e&o=&hp=1"

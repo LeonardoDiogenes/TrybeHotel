@@ -67,7 +67,7 @@ namespace TrybeHotel.Repository
             {
                 return null!;
             }
-            
+
             var room = _context.Rooms.First(r => r.RoomId == booking.RoomId);
             var hotel = _context.Hotels.First(h => h.HotelId == room.HotelId);
             var city = _context.Cities.First(c => c.CityId == hotel.CityId);
@@ -95,6 +95,44 @@ namespace TrybeHotel.Repository
                     }
                 }
             };
+        }
+
+        public List<BookingResponse> GetBookings(string email)
+        {
+            var user = _context.Users.First(u => u.Email == email);
+            var bookings = _context.Bookings.Where(b => b.UserId == user.UserId).ToList();
+            var bookingResponses = new List<BookingResponse>();
+            foreach (var booking in bookings)
+            {
+                var room = _context.Rooms.First(r => r.RoomId == booking.RoomId);
+                var hotel = _context.Hotels.First(h => h.HotelId == room.HotelId);
+                var city = _context.Cities.First(c => c.CityId == hotel.CityId);
+                bookingResponses.Add(new BookingResponse
+                {
+                    GuestName = user.Name,
+                    BookingId = booking.BookingId,
+                    Checkin = booking.CheckIn,
+                    Checkout = booking.CheckOut,
+                    GuestQuant = booking.GuestQuant,
+                    Room = new RoomDto
+                    {
+                        RoomId = room.RoomId,
+                        Name = room.Name,
+                        Capacity = room.Capacity,
+                        Image = room.Image,
+                        Hotel = new HotelDto
+                        {
+                            HotelId = hotel.HotelId,
+                            Name = hotel.Name,
+                            Address = hotel.Address,
+                            CityId = city.CityId,
+                            CityName = city.Name,
+                            State = city.State
+                        }
+                    }
+                });
+            }
+            return bookingResponses;
         }
 
         public Room GetRoomById(int RoomId)
@@ -150,7 +188,7 @@ namespace TrybeHotel.Repository
                 }
             };
 
-    }
+        }
 
         public void DeleteBooking(int bookingId)
         {

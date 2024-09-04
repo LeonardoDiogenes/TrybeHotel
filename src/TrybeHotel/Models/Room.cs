@@ -2,7 +2,6 @@ namespace TrybeHotel.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-// 1. Implemente as models da aplicação
 public class Room {
 	public int RoomId {get; set;}
 	[Required(ErrorMessage = "Name is required")]
@@ -11,6 +10,8 @@ public class Room {
 	[Required(ErrorMessage = "Capacity is required")]
 	[Range(1, 10, ErrorMessage = "Capacity must be between 1 and 10")]
 	public int Capacity {get; set;}
+	public int KingSizeBeds {get; set;}
+	public int SingleSizeBeds {get; set;}
 	public List<string>? Image {get; set;}
 	[Required(ErrorMessage = "HotelId is required")]
 	public int HotelId {get; set;}

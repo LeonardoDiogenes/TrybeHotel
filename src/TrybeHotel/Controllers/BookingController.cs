@@ -61,6 +61,23 @@ namespace TrybeHotel.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "Client")]
+        public IActionResult GetBookings(){
+            try
+            {
+                var token = HttpContext.User.Identity as ClaimsIdentity;
+                var userEmail = token?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                var bookings = _repository.GetBookings(userEmail!);
+                return Ok(bookings);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         [HttpPut("{Bookingid}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Policy = "Client")]

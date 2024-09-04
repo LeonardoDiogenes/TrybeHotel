@@ -19,6 +19,8 @@ namespace TrybeHotel.Repository
                             RoomId = room.RoomId,
                             Name = room.Name,
                             Capacity = room.Capacity,
+                            KingSizeBeds = room.KingSizeBeds,
+                            SingleSizeBeds = room.SingleSizeBeds,
                             Image = room.Image,
                             Hotel = new HotelDto
                             {
@@ -31,14 +33,14 @@ namespace TrybeHotel.Repository
                             }
                         };
             var roomsList = rooms.ToList();
-            
+
             if (roomsList.Count() == 0)
             {
                 throw new Exception("No rooms found");
             }
             return roomsList;
         }
-        
+
         public IEnumerable<RoomDto> GetRooms(int HotelId)
         {
             var hotel = _context.Hotels.Find(HotelId);
@@ -53,6 +55,8 @@ namespace TrybeHotel.Repository
                             RoomId = room.RoomId,
                             Name = room.Name,
                             Capacity = room.Capacity,
+                            KingSizeBeds = room.KingSizeBeds,
+                            SingleSizeBeds = room.SingleSizeBeds,
                             Image = room.Image,
                             Hotel = new HotelDto
                             {
@@ -71,7 +75,8 @@ namespace TrybeHotel.Repository
             return rooms;
         }
 
-        public RoomDto AddRoom(Room room) {
+        public RoomDto AddRoom(Room room)
+        {
             var roomHotel = _context.Hotels.Find(room.HotelId);
             if (roomHotel == null)
             {
@@ -87,6 +92,8 @@ namespace TrybeHotel.Repository
                 RoomId = newRoom.RoomId,
                 Name = newRoom.Name,
                 Capacity = newRoom.Capacity,
+                KingSizeBeds = newRoom.KingSizeBeds,
+                SingleSizeBeds = newRoom.SingleSizeBeds,
                 Image = newRoom.Image,
                 Hotel = new HotelDto
                 {
@@ -100,7 +107,8 @@ namespace TrybeHotel.Repository
             };
         }
 
-        public void DeleteRoom(int RoomId) {
+        public void DeleteRoom(int RoomId)
+        {
             var room = _context.Rooms.Find(RoomId);
             if (room != null)
             {
@@ -113,7 +121,8 @@ namespace TrybeHotel.Repository
             }
         }
 
-        public RoomDto UpdateRoom(int RoomId, Room room) {
+        public RoomDto UpdateRoom(int RoomId, Room room)
+        {
             var roomToUpdate = _context.Rooms.Find(RoomId);
             if (roomToUpdate == null)
             {
@@ -122,6 +131,8 @@ namespace TrybeHotel.Repository
 
             roomToUpdate.Name = room.Name;
             roomToUpdate.Capacity = room.Capacity;
+            roomToUpdate.KingSizeBeds = room.KingSizeBeds;
+            roomToUpdate.SingleSizeBeds = room.SingleSizeBeds;
             roomToUpdate.Image = room.Image;
             _context.SaveChanges();
 
@@ -133,6 +144,8 @@ namespace TrybeHotel.Repository
                 RoomId = roomToUpdate.RoomId,
                 Name = roomToUpdate.Name,
                 Capacity = roomToUpdate.Capacity,
+                KingSizeBeds = roomToUpdate.KingSizeBeds,
+                SingleSizeBeds = roomToUpdate.SingleSizeBeds,
                 Image = roomToUpdate.Image,
                 Hotel = new HotelDto
                 {
