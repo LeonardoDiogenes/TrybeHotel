@@ -97,7 +97,7 @@ namespace TrybeHotel.Controllers
 
         [HttpDelete("{Bookingid}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "Client")]
         public IActionResult DeleteBooking(int bookingId){
             try
             {
